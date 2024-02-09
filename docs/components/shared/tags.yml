@@ -1,0 +1,7 @@
+tags:
+  # The tag order here controls the default sorting in Swagger UI
+  - name: Documentação da API
+  - name: User - Autenticação
+  - name: User - Upload de arquivo
+  - name: ---
+  - name: Cadastro - Pátios

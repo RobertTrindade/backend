@@ -1,0 +1,54 @@
+paths:
+  /patios:
+    get:
+      summary: 'Rota utilizada para exibir todos os pátios'
+      tags:
+        - Cadastro - Pátios
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PatioSchema'
+
+    post:
+      summary: 'Rota para exibir um pátio'
+      tags:
+        - Cadastro - Pátios
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatioSchema'
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PatioSchema'
+    
+
+  /patios/{id}:
+    parameters:
+      - $ref: '#/components/parameters/IdParameter'
+    get:
+      summary: 'Rota para exibir um pátio'
+      tags:
+        - Cadastro - Pátios
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PatioSchema'
+

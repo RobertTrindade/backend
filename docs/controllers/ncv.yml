@@ -1,0 +1,57 @@
+paths:
+  /ncv:
+    get:
+      summary: 'Rota utilizada para exibir todos os ncv'
+      tags:
+        - Ncv
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PatioSchema'
+
+    
+
+  /ncv/documentos/{id}:
+    parameters:
+      - $ref: '#/components/parameters/IdParameter'
+    post:
+      summary: 'Rota Anexar um Doc ao NCV'
+      tags:
+        - Ncv
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NcvScheme'
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/NcvSchemeAtachDocResponse'
+                  
+   
+    get:
+        summary: 'Rota Anexar um Doc ao NCV'
+        tags:
+          - Ncv
+        security:
+          - BearerAuth: []
+        responses:
+          '200':
+            description: 'OK'
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - $ref: '#/components/schemas/NcvSchemeDocResponse'

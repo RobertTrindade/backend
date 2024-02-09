@@ -1,0 +1,150 @@
+components:
+  schemas:
+    DocumentosPatioSchema:
+      type: array
+      items:
+        type: object
+        properties:
+          tipo:
+            type: string
+            example: 'Tipo de Documento'
+          startAt:
+            type: string
+            format: date-time
+            example: '2024-01-18T12:00:00.000Z'
+          endAt:
+            type: string
+            format: date-time
+            example: '2024-01-19T12:00:00.000Z'
+          observacao:
+            type: string
+            example: 'Observações sobre o Documento'
+          file:
+            type: string
+            example: 'caminho/do/arquivo.pdf'
+
+    PatioSchema:
+      type: object
+      properties:
+        nome:
+          type: string
+          example: 'SOROCABA - NOVE DE JULHO'
+        responsavel:
+          type: string
+          example: 'FERNANDO'
+        telefone:
+          type: string
+          example: '(11) 11111-1111'
+        observacao:
+          type: string
+          example: 'observação do cad'
+        email:
+          type: string
+          example: 'adm@grupocarvalhogestao.com.br'
+        bairro:
+          type: string
+          example: 'bairro de teste'
+        cep:
+          type: string
+          example: ''
+        cidade:
+          type: string
+          example: ''
+        estado:
+          type: string
+          example: ''
+        createdAt:
+          type: string
+          format: date-time
+          example: '2024-01-18T00:00:00.000Z'
+        latitude:
+          type: string
+          example: "lat"
+        longitude:
+          type: string
+          nullable: true
+          example: "ss"
+        endereco:
+          type: string
+          example: ''
+        ativo:
+          type: boolean
+          example: true
+        documentos:
+          $ref: '#/components/schemas/DocumentosPatioSchema'
+
+    CadastroPatioSchema:
+      type: object
+      properties:
+        nome:
+          type: string
+          example: 'Pátio de testes'
+        responsavel:
+          type: string
+          example: 'João Silva'
+        telefone:
+          type: string
+          example: '123456789'
+        observacao:
+          type: string
+          example: 'Observações sobre a empresa'
+        email:
+          type: string
+          example: 'joao.silva@empresa.com'
+        bairro:
+          type: string
+          example: 'Centro'
+        cep:
+          type: string
+          example: '12345-678'
+        cidade:
+          type: string
+          example: 'Cidade A'
+        estado:
+          type: string
+          example: 'Estado A'
+        longitude:
+          type: string
+          example: '123.456'
+        latitude:
+          type: string
+          example: '-23.789'
+        endereco:
+          type: string
+          example: 'Rua Principal, 123'
+        documentos:
+          type: array
+          items:
+            type: object
+            properties:
+              tipo:
+                type: string
+                example: 'CONTRATO'
+              startAt:
+                type: string
+                format: date-time
+                example: '2024-01-18T12:00:00.000Z'
+              endAt:
+                type: string
+                format: date-time
+                example: '2024-01-19T12:00:00.000Z'
+              observacao:
+                type: string
+                example: 'Observações sobre o Documento'
+              file:
+                type: string
+                example: '/files/84a9ff5ade8d069c13de0c1d0563ca1b-teste.pdf'
+        required:
+          - nome
+          - responsavel
+          - telefone
+          - observacao
+          - email
+          - bairro
+          - cep
+          - cidade
+          - estado
+          - longitude
+          - latitude
+          - endereco
+          - documentos

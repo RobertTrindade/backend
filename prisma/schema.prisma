@@ -1,0 +1,510 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgres"
+  url      = env("DB_URL")
+}
+
+model Chamados {
+  id                    Int      @id @default(autoincrement())
+  createAt              DateTime @default(now())
+  updatedAt             DateTime @default(now())
+  equipamentoSolicitado String
+  tipoVeiculo           String
+  tipoApreensao         String
+  patioId               Int
+
+  status   String  @default("Aguardando")
+  detalhes String?
+
+  urgencia ChamadoUrgencia @default(Baixa)
+
+  origem           String
+  vehiclesQuantity Int
+  driversQuantity  Int
+  multiple         Boolean
+  chamadosLocalId  Int
+  chamadorId       Int
+  chamador         Usuarios        @relation(fields: [chamadorId], references: [id])
+  localizacao      ChamadosLocal   @relation(fields: [chamadosLocalId], references: [id])
+  patio            Patios          @relation(fields: [patioId], references: [id])
+  fotos            ChamadosFotos[]
+  Ncv              Ncv[]
+  Aceite           ChamadoAceite[]
+  Motoristas       Motoristas?     @relation(fields: [motoristasId], references: [id])
+  motoristasId     Int?
+}
+
+model TipoVeiculo {
+  id        Int     @id @default(autoincrement())
+  descricao String
+  ativo     Boolean
+}
+
+model ChamadoAceite {
+  id           Int         @id @default(autoincrement())
+  motoristasId Int?
+  Motoristas   Motoristas? @relation(fields: [motoristasId], references: [id])
+
+  tempoEstimado String?
+  kmsEstimado   String?
+
+  tempoAtendimento String?
+  kmsAtendimento   String?
+
+  Chamados   Chamados? @relation(fields: [chamadosId], references: [id])
+  chamadosId Int?
+
+  lugarAceiteLatitude  String?
+  lugarAceiteLongitude String?
+
+  aceiteHora      DateTime  @default(now())
+  finalizacaoHora DateTime?
+}
+
+enum NcvSatus {
+  LIBERADO
+  LEBERADO_ARR
+  INATIVO
+  CANCELADO
+  APREENDIDO
+}
+
+model Ncv {
+  id               Int      @id @default(autoincrement())
+  cor              String?
+  marca            String?
+  modelo           String?
+  placa            String?
+  ano              String?
+  municipio        String?
+  uf               String?
+  km               String?
+  chassi           String?
+  motor            String?
+  kmFotos          String[]
+  combustivelFotos String[]
+
+  status NcvSatus @default(APREENDIDO)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+
+  chamadoId Int
+  Chamado   Chamados @relation(fields: [chamadoId], references: [id])
+
+  Avarias            NcvAvarias[]
+  avariasDescription String?
+
+  apreensaoId Int
+  Apreensao   NcvApreensao @relation(fields: [apreensaoId], references: [id])
+
+  acessoriosId Int
+  Acessorios   NcvAcessorios @relation(fields: [acessoriosId], references: [id])
+
+  complementoId Int
+  Complemento   NcvComplemento @relation(fields: [complementoId], references: [id])
+
+  motoristaId Int
+  Motoristas  Motoristas? @relation(fields: [motoristaId], references: [id])
+
+  Extras     NcvExtras[]
+  Documentos NcvDocumentos[]
+}
+
+model NcvDocumentos {
+  id Int @id @default(autoincrement())
+
+  tipo     String
+  detalhes String
+  file     String
+  Ncv      Ncv?   @relation(fields: [ncvId], references: [id])
+  ncvId    Int?
+}
+
+model NcvExtras {
+  id Int @id @default(autoincrement())
+
+  valor      String
+  observacao String
+  type       NcvExtrasTypes @default(acrescimo)
+
+  Ncv   Ncv? @relation(fields: [ncvId], references: [id])
+  ncvId Int?
+}
+
+model NcvComplemento {
+  id        Int                @id @default(autoincrement())
+  pintura   ComplementoStatus?
+  tapecaria ComplementoStatus?
+  pneus     ComplementoStatus?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+  Ncv        Ncv[]
+}
+
+model NcvAcessorios {
+  id               Int      @id @default(autoincrement())
+  Ncv              Ncv[]
+  arCondicionado   Boolean?
+  vidroEletrico    Boolean?
+  cambioManual     Boolean?
+  cambioAutomatico Boolean?
+  radioCd          Boolean?
+  pneuStep         Boolean?
+  rodaComum        Boolean?
+  rodaEspecial     Boolean?
+  calotas          Boolean?
+  antena           Boolean?
+  documento        Boolean?
+  carroFuncionando Boolean?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+}
+
+model NcvApreensao {
+  id               Int      @id @default(autoincrement())
+  Ncv              Ncv[]
+  chaves           Boolean?
+  blitz            Boolean?
+  guinchoColetivo  Boolean?
+  kmPercorrido     String?
+  adulterado       Boolean?
+  crimesTransito   Boolean?
+  emTela           Boolean?
+  foraCirculacao   Boolean?
+  judicial         Boolean?
+  leasing          Boolean?
+  motoQueixa       Boolean?
+  pedirBaixa       Boolean?
+  policiaCivil     Boolean?
+  traficoDrogas    Boolean?
+  rouboFurto       Boolean?
+  semDocumentosCrv Boolean?
+  infracaoTransito Boolean?
+  motivoApreensao     String?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+}
+
+model NcvAvarias {
+  id    Int      @id @default(autoincrement())
+  fotos String[]
+  Ncv   Ncv?     @relation(fields: [ncvId], references: [id])
+  ncvId Int?
+  type  String?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+}
+
+model ChamadosFotos {
+  id         Int       @id @default(autoincrement())
+  imageUrl   String?
+  chamadosId Int?
+  chamados   Chamados? @relation(fields: [chamadosId], references: [id])
+}
+
+model ChamadosLocal {
+  id               Int        @id @default(autoincrement())
+  estado           String
+  uf               String
+  municipio        String
+  distrito         String
+  cep              String
+  latitude         String
+  longitude        String
+  enderecoCompleto String
+  chamados         Chamados[]
+}
+
+model Patios {
+  id          Int     @id @default(autoincrement())
+  nome        String? @db.VarChar
+  responsavel String? @db.VarChar
+  telefone    String? @db.VarChar
+  observacao  String?
+  email       String? @db.VarChar
+
+  bairro     String?           @db.VarChar
+  cep        String?           @db.VarChar
+  cidade     String?           @db.VarChar
+  estado     String?           @db.VarChar
+  createdAt  DateTime?         @default(now()) @db.Date
+  latitude   String?
+  longitude  String?
+  endereco   String?           @db.VarChar
+  ativo      Boolean           @default(true)
+  chamados   Chamados[]
+  documentos PatiosDocuments[]
+  Usuarios   Usuarios?         @relation(fields: [usuariosId], references: [id])
+  usuariosId Int?
+}
+
+model PatiosDocuments {
+  id Int @id @default(autoincrement())
+
+  tipo       String?
+  observacao String?
+  file       String?
+  startAt    DateTime? @default(now()) @db.Date
+  endAt      DateTime? @default(now()) @db.Date
+
+  Patios   Patios? @relation(fields: [patiosId], references: [id])
+  patiosId Int?
+}
+
+model Security {
+  id            Int       @id @default(autoincrement())
+  credential    String    @unique @db.VarChar(512)
+  code          String?   @db.VarChar(32)
+  codeExpiresIn DateTime?
+  validated     Boolean   @default(false)
+}
+
+model Motoristas {
+  id                   Int                 @id @default(autoincrement())
+  role                 AccountRole         @default(driver)
+  name                 String              @db.VarChar(512)
+  celular              String              @db.VarChar(512)
+  email                String              @unique @db.VarChar(512)
+  password             String
+  birthdate            DateTime?           @default(now()) @db.Date
+  cpf                  String?
+  rg                   String?
+  latitude             String?
+  longitude            String?
+  pdfContrato          String?
+  status               AccountStatus       @default(pendente)
+  imageUrl             String?
+  code                 String?             @db.VarChar(32)
+  codeExpiresIn        DateTime?
+  createdAt            DateTime            @default(now()) @db.Date
+  updatedAt            DateTime            @default(now()) @db.Date
+  xp                   Int                 @default(0)
+  statusTrabalho       statusTrabalho      @default(indisponivel)
+  gender               String?             @default("Masculino")
+  cnhId                Int
+  motoristasEnderecoId Int?
+  empresaReboqueId     Int?
+  representaEmpresa    Boolean
+  Cnh                  MotoristasCNH       @relation(fields: [cnhId], references: [id], onDelete: Cascade)
+  EmpresaReboque       EmpresaReboque?     @relation(fields: [empresaReboqueId], references: [id], onDelete: Cascade)
+  MotoristasEndereco   MotoristasEndereco? @relation(fields: [motoristasEnderecoId], references: [id], onDelete: Cascade)
+  Reboques             Reboques[]
+  ChamadoAceite        ChamadoAceite[]
+  Ncv                  Ncv[]
+  ChamadosDirecionados Chamados[]
+}
+
+model MotoristasCNH {
+  id           Int          @id @default(autoincrement())
+  cnh          String
+  cnhCategoria String
+  cnhValidade  DateTime
+  cnhPdf       String
+  Motoristas   Motoristas[]
+}
+
+model MotoristasEndereco {
+  id         Int          @id @default(autoincrement())
+  endereco   String
+  bairro     String
+  cidade     String
+  cep        String
+  uf         String
+  Motoristas Motoristas[]
+}
+
+model Cargos {
+  id          Int        @id @default(autoincrement())
+  description String
+  salario     Float?
+  Admin       Usuarios[]
+}
+
+model Usuarios {
+  id               Int            @id @default(autoincrement())
+  role             AccountRole    @default(cco)
+  name             String         @db.VarChar(512)
+  email            String         @unique @db.VarChar(512)
+  password         String
+  status           AccountStatus? @default(ativo)
+  imageUrl         String?
+  code             String?        @db.VarChar(32)
+  codeExpiresIn    DateTime?
+  createdAt        DateTime       @default(now()) @db.Date
+  updatedAt        DateTime       @updatedAt @db.Date
+  cargosId         Int?
+  Chamados         Chamados[]
+  NewsLetters      NewsLetters[]
+  Cargo            Cargos?        @relation(fields: [cargosId], references: [id])
+  Permissions      Permission[]   @relation("PermissionToUsuarios")
+  SenderMessages   Message[]      @relation("sender")
+  ReceiverMessages Message[]      @relation("receiver")
+
+  Groups   Groups? @relation(fields: [groupsId], references: [id])
+  groupsId Int?
+
+  patios       Patios[]
+  celular      String?   @db.VarChar(512)
+  emailPessoal String?   @unique @db.VarChar(512)
+  birthdate    DateTime? @default(now()) @db.Date
+  cpf          String?
+  pdfContrato  String?
+
+  idEndereco Int?
+  Endereco   UsuarioEndereco? @relation(fields: [idEndereco], references: [id])
+}
+
+model UsuarioEndereco {
+  id Int @id @default(autoincrement())
+
+  endereco String
+  bairro   String
+  cidade   String
+  cep      String
+  uf       String
+  Usuarios Usuarios[]
+}
+
+model Permission {
+  id     Int         @id @default(autoincrement())
+  title  Permissions @unique
+  admins Usuarios[]  @relation("PermissionToUsuarios")
+}
+
+model NewsLetters {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  createdById Int
+  createdBy   Usuarios @relation(fields: [createdById], references: [id])
+}
+
+model Faq {
+  id        Int      @id @default(autoincrement())
+  question  String
+  answer    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Text {
+  id        Int      @id @default(autoincrement())
+  type      TextType @unique
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model EmpresaReboque {
+  id         Int          @id @default(autoincrement())
+  nome       String?
+  cnpj       String?
+  Motoristas Motoristas[]
+}
+
+model Pallet {
+  id        Int     @id @default(autoincrement())
+  main      String? @default("#F60")
+  secundary String? @default("#999A9A")
+}
+
+model Groups {
+  id       Int        @id @default(autoincrement())
+  name     String?
+  imageUrl String?
+  Admin    Usuarios[]
+  Message  Message[]
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  text      String?
+
+  senderId Int
+  sender   Usuarios @relation("sender", fields: [senderId], references: [id])
+
+  receiverId Int?
+  receiver   Usuarios? @relation("receiver", fields: [receiverId], references: [id])
+
+  groupId Int?
+  Group   Groups? @relation(fields: [groupId], references: [id])
+}
+
+model Reboques {
+  id           Int         @id @default(autoincrement())
+  crlvUrl      String?
+  placa        String?
+  motoristasId Int?
+  Motoristas   Motoristas? @relation(fields: [motoristasId], references: [id])
+}
+
+enum ChamadoUrgencia {
+  Baixa
+  Media
+  Alta
+}
+
+enum AccountStatus {
+  ativo
+  inativo
+  pendente
+}
+
+enum statusTrabalho {
+  disponivel
+  ocupado
+  indisponivel
+}
+
+enum Permissions {
+  configuracoes
+  faqs
+  textos
+  chamados
+  motoristas
+  usuarios
+  ecossistema
+  ncv
+  fechamentoMotorista
+  patios
+  tipoVeiculo
+}
+
+enum AccountRole {
+  TI
+  director
+  admin
+  lecturer
+  driver
+  manager
+  rh
+  external
+  cco
+}
+
+enum TextType {
+  about
+  privacy
+  terms
+}
+
+enum ComplementoStatus {
+  Bom
+  Regular
+  Ruim
+}
+
+enum NcvExtrasTypes {
+  desconto
+
+  acrescimo
+}

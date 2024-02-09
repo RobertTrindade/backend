@@ -1,0 +1,48 @@
+components:
+  schemas:
+    NcvScheme:
+      type: object
+      properties:
+        tipo:
+          type: string
+          required: true
+          example: 'DOC'
+        detalhes:
+          type: string
+          required: true
+          example: 'Texto aqui'
+        file:
+          type: string
+          required: true
+          example: 'url do file'
+    NcvSchemeAtachDocResponse:
+      type: object
+      properties:
+        tipo:
+          type: string
+          required: true
+          example: 'DOC'
+        detalhes:
+          type: string
+          required: true
+          example: 'Texto aqui'
+        file:
+          type: string
+          required: true
+          example: 'url do file'
+
+    NcvSchemeDocResponse:
+      type: object
+      properties:
+        id:
+          type: number
+          example: '1'
+        tipo:
+          type: string
+          example: 'Texto aqui'
+        file:
+          type: string
+          required: true
+          example: 'url do file'
+
+

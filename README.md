@@ -1,4 +1,4 @@
-<h1 align="center">Eco chamados Back end</h1>
+<h1 align="center">SOS Lavanderia Back end</h1>
 <div align="center">
   <img width="auto" height="23em" src="https://img.shields.io/badge/TypeScript-323330?style=flat&logo=TypeScript">
   <img width="auto" height="23em" src="https://img.shields.io/badge/Node.js-323330?style=flat&logo=Node.js">

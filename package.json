@@ -13,9 +13,10 @@
     "build": "tsc && tsc-alias",
     "start": "node -r dotenv/config dist/server.js",
     "dev": "tsx watch -r dotenv/config src/server.ts",
+
+    "prisma:generate": "npm run prisma generate",
     "prisma:migration": "prisma db push",
     "prisma:seed": "tsx prisma/seeds/index.ts",
-    "prisma:generate": "npm run prisma generate",
     "prisma:reset": "prisma db push --force-reset && tsx prisma/seeds/index.ts",
     "test": "jest -i"
   },
